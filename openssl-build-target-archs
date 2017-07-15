@@ -4,7 +4,7 @@
 
 NDK_PATH=$(pwd)"/${NDK_DIR_NAME}"
 OPENSSL_PATH=$(pwd)"/${OPENSSL_DIR_NAME}"
-GCC_VERSION=$(gcc --version | grep gcc | awk '{print $4}' | cut -d'.' -f1,2)
+GCC_VERSION=${CROSS_GCC_VERSION}
 LIB_PATH="${OPENSSL_BUILD_OUT_PATH}/libs"
 LOG_PATH="${OPENSSL_BUILD_OUT_PATH}/logs"
 

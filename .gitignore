@@ -1,8 +1,9 @@
-pjproject-2.4.5
-openssl-1.0.2g
-openh264-1.0.0
+pjproject-*
+openssl-*
+openh264-*
+opus-*
 libyuv-android
-android-ndk-r10e
+android-ndk-r*
 android-sdk-linux
 pjsip-build
 openssl-build-output

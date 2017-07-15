@@ -157,5 +157,51 @@ then
     ./openh264-build-target-archs || true
 fi
 
-echo "The build system is ready! Execute: ./build to build PJSIP :)"
+if [ "$DOWNLOAD_OPUS" == "1" ]
+then
+    # see https://trac.pjsip.org/repos/ticket/1904
+    echo "Downloading Opus ..."
+    cd "${BASEDIR}"
+    curl -L -# -o opus.tar.gz "$OPUS_DOWNLOAD_URL" 2>&1
+    rm -rf "${OPUS_DIR_NAME}"
+    export PATH="${BASEDIR}/${NDK_DIR_NAME}:$PATH"
+    echo "Opus downloaded!"
+    echo "Extracting Opus ..."
+    tar xzf opus.tar.gz && rm -rf opus.tar.gz
+    cd ${OPUS_DIR_NAME}
+    mkdir jni
+    cat <<EOF > jni/Application.mk
+APP_ABI             := ${TARGET_ARCHS[@]}
+EOF
+    cat <<'EOF' > jni/Android.mk
+LOCAL_PATH := $(call my-dir)/..
+include $(CLEAR_VARS)
+include $(LOCAL_PATH)/celt_sources.mk
+include $(LOCAL_PATH)/silk_sources.mk
+include $(LOCAL_PATH)/opus_sources.mk
+LOCAL_MODULE        := opus
+SILK_SOURCES        += $(SILK_SOURCES_FIXED)
+CELT_SOURCES        += $(CELT_SOURCES_ARM)
+SILK_SOURCES        += $(SILK_SOURCES_ARM)
+LOCAL_SRC_FILES     := \
+    $(CELT_SOURCES) $(SILK_SOURCES) $(OPUS_SOURCES) $(OPUS_SOURCES_FLOAT)
+LOCAL_LDLIBS        := -lm -llog
+LOCAL_C_INCLUDES    := \
+    $(LOCAL_PATH)/include \
+    $(LOCAL_PATH)/silk \
+    $(LOCAL_PATH)/silk/fixed \
+    $(LOCAL_PATH)/celt
+LOCAL_CFLAGS        := -DNULL=0 -DSOCKLEN_T=socklen_t -DLOCALE_NOT_USED -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64
+LOCAL_CFLAGS        += -Drestrict='' -D__EMX__ -DOPUS_BUILD -DFIXED_POINT -DUSE_ALLOCA -DHAVE_LRINT -DHAVE_LRINTF -O3 -fno-math-errno
+LOCAL_CPPFLAGS      := -DBSD=1 
+LOCAL_CPPFLAGS      += -ffast-math -O3 -funroll-loops
+include $(BUILD_STATIC_LIBRARY)
+EOF
+    ndk-build
+    mkdir -p $OPUS_DEV_LIB/include/opus
+    mkdir -p $OPUS_DEV_LIB/lib
+    cp include/* $OPUS_DEV_LIB/include/opus/
+    cp -r obj/local/* $OPUS_DEV_LIB/lib/
+fi
 
+echo "The build system is ready! Execute: ./build to build PJSIP :)"
