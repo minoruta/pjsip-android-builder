@@ -26,7 +26,7 @@ then
     echo "Downloading Android NDK ..."
     cd "${BASEDIR}"
     curl -L -# -o ndk.bin "$NDK_DOWNLOAD_URL" 2>&1
-    rm -rf "$NDK_DIR_NAME"
+    rm -rf "$NDK_DIR_NAME/*"
     echo "Android NDK downloaded!"
     echo "Extracting Android NDK ..."
     chmod +x ndk.bin && ./ndk.bin 2>&1 > /dev/null || true
@@ -38,7 +38,7 @@ then
     echo "Downloading Android SDK ..."
     cd "${BASEDIR}"
     curl -L -# -o sdk.tgz "$SDK_DOWNLOAD_URL" 2>&1
-    rm -rf "$SDK_DIR_NAME"
+    rm -rf "$SDK_DIR_NAME/*"
     echo "Android SDK downloaded!"
     echo "Extracting Android SDK ..."
     tar xzf sdk.tgz && rm -rf sdk.tgz
@@ -69,7 +69,7 @@ then
     echo "Downloading PJSIP ..."
     cd "${BASEDIR}"
     curl -L -# -o pjsip.tar.bz2 "$PJSIP_DOWNLOAD_URL" 2>&1
-    rm -rf "$PJSIP_DIR_NAME"
+    rm -rf "$PJSIP_DIR_NAME/*"
     echo "PJSIP downloaded!"
     echo "Extracting PJSIP ..."
     tar xjf pjsip.tar.bz2 && rm -rf pjsip.tar.bz2
@@ -86,12 +86,13 @@ then
     fi
 fi
 
-if [ "$DOWNLOAD_SWIG" == "1" ]
+which swig
+if [ $? -ne "0" ] && [ "$DOWNLOAD_SWIG" == "1" ]
 then
     echo "Downloading SWIG ..."
     cd "${BASEDIR}"
     curl -L -# -o swig.tar.gz "$SWIG_DOWNLOAD_URL" 2>&1
-    rm -rf "$SWIG_DIR_NAME"
+    rm -rf "$SWIG_DIR_NAME/*"
     echo "SWIG downloaded!"
     echo "Extracting SWIG ..."
     tar xzf swig.tar.gz && rm -rf swig.tar.gz
@@ -107,7 +108,7 @@ then
     echo "Downloading OpenSSL ..."
     cd "${BASEDIR}"
     curl -L -# -o openssl.tar.gz "$OPENSSL_DOWNLOAD_URL" 2>&1
-    rm -rf "$OPENSSL_DIR_NAME"
+    rm -rf "$OPENSSL_DIR_NAME/*"
     echo "OpenSSL downloaded!"
     echo "Extracting OpenSSL ..."
     tar xzf openssl.tar.gz && rm -rf openssl.tar.gz
@@ -119,7 +120,7 @@ if [ "$DOWNLOAD_LIBYUV" == "1" ]
 then
     echo "Downloading libyuv ..."
     cd "${BASEDIR}"
-    rm -rf "${LIBYUV_REPO_DIR_NAME}"
+    rm -rf "${LIBYUV_REPO_DIR_NAME/*}"
     git clone "${LIBYUV_REPO_PATH}"
     cd "${LIBYUV_REPO_DIR_NAME}"
     export PATH="${BASEDIR}/${NDK_DIR_NAME}:$PATH"
@@ -143,7 +144,7 @@ then
     echo "Downloading OpenH264 ..."
     cd "${BASEDIR}"
     curl -L -# -o openh264.tar.gz "$OPENH264_DOWNLOAD_URL" 2>&1
-    rm -rf "${OPENH264_DIR_NAME}"
+    rm -rf "${OPENH264_DIR_NAME/*}"
     echo "OpenH264 downloaded!"
     echo "Extracting OpenH264 ..."
     tar xzf openh264.tar.gz && rm -rf openh264.tar.gz
@@ -163,7 +164,7 @@ then
     echo "Downloading Opus ..."
     cd "${BASEDIR}"
     curl -L -# -o opus.tar.gz "$OPUS_DOWNLOAD_URL" 2>&1
-    rm -rf "${OPUS_DIR_NAME}"
+    rm -rf "${OPUS_DIR_NAME/*}"
     export PATH="${BASEDIR}/${NDK_DIR_NAME}:$PATH"
     echo "Opus downloaded!"
     echo "Extracting Opus ..."

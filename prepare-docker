@@ -1,0 +1,14 @@
+#!/bin/bash -e
+
+set +e
+docker inspect pjsip-prepare > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    docker build \
+        -f Docker/Dockerfile.prepare \
+        -t pjsip-prepare \
+        .
+fi
+
+docker run -t \
+    --name pjsip-prepare \
+    pjsip-prepare

@@ -1,0 +1,8 @@
+FROM pjsip-prepare
+
+ENV WORKDIR /pjsip-android-builder
+WORKDIR $WORKDIR
+
+COPY build              build
+
+CMD $WORKDIR/build

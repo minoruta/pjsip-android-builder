@@ -1,0 +1,37 @@
+FROM ubuntu:16.04
+
+ENV WORKDIR /pjsip-android-builder
+WORKDIR $WORKDIR
+
+COPY config.conf                    config.conf
+COPY prepare-build-system           prepare-build-system
+COPY openh264-build-target-archs    openh264-build-target-archs
+COPY openssl-build-target-archs     openssl-build-target-archs
+COPY openssl-build                  openssl-build
+
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get -y install \
+    sudo \
+    software-properties-common \
+    default-jdk swig \
+    vim git curl bzip2 gcc g++ binutils make autoconf openssl \
+    libssl-dev ant libopus0 \
+    libpcre3 libpcre3-dev build-essential nasm \
+    libstdc++6 zlib1g \
+    libc6:i386 libstdc++6:i386 zlib1g:i386 && \
+    apt purge -y --auto-remove && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m docker && \
+    echo "docker:docker" | chpasswd && adduser docker sudo
+
+VOLUME $WORKDIR/android-ndk-r10e
+VOLUME $WORKDIR/android-sdk-linux
+VOLUME $WORKDIR/openssl-build-output  
+VOLUME $WORKDIR/openh264-build-output
+VOLUME $WORKDIR/libyuv-android
+VOLUME $WORKDIR/opus-dev-lib  
+VOLUME $WORKDIR/pjproject-2.6  
+
+CMD $WORKDIR/prepare-build-system

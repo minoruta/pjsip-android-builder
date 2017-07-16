@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+set +e
+docker inspect pjsip-build > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    docker build \
+        -f Docker/Dockerfile.build \
+        -t pjsip-build \
+        .
+fi
+
+docker run -t \
+    --name pjsip-build \
+    --volumes-from pjsip-prepare \
+    --volume `pwd`/Docker/pjsip-build:/pjsip-android-builder/pjsip-build \
+    --volume `pwd`/Docker/libyuv-android/jni/out/Release:/pjsip-android-builder/libyuv-android/jni/out/Release \
+    pjsip-build

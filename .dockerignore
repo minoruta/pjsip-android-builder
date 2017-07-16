@@ -1,0 +1,13 @@
+README.md
+Vagrantfile
+android-ndk-*
+android-sdk-linux
+build-docker
+build-vagrant-base-box
+build-with-g729
+g729_patch
+openh264-1.0.0-android21.patch
+openssl-1*
+opus-*
+pjproject-*
+pjsip-build

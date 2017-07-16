@@ -198,6 +198,21 @@ DOWNLOAD_LIBYUV=0
 4. Execute `./prepare-build-system` and the new OpenSSL will be downloaded and compiled (go get a coffee :D)
 5. Rebuild PJSIP (by either using `./build` or `./build-with-g729`)
 
+## Build with Docker
+
+You can build the above libraries with Docker as well instead of Vagrant.
+
+1. `./prepare-docker` to prepare an environment to build,
+1. `./build-docker` to build PJSIP,
+1. then, you'll get a new folder named <b>`pjsip-build`</b> under `./Docker` organized as follows:
+```
+Docker/
+  |-- pjsip-build/
+    |-- logs/  contains the full build log for each target architecture
+    |-- lib/   contains the compiled libraries for each target architecture
+    |-- src/   contains PJSUA Java wrapper to work with the library
+```
+
 ## License
 
     Copyright (C) 2015-2016 Aleksandar Gotev

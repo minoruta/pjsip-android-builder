@@ -32,7 +32,7 @@ export ANDROID_NDK_ROOT="${BASE_FOLDER}/${NDK_DIR_NAME}"
 export PATH="$ANDROID_NDK_ROOT:$PATH"
 
 echo "Clear final build folder ..."
-rm -rf "${FINAL_BUILD_DIR}"
+rm -rf "${FINAL_BUILD_DIR/*}"
 mkdir -p "${FINAL_BUILD_LIB}"
 mkdir -p "${FINAL_BUILD_LOGS}"
 
@@ -56,28 +56,28 @@ do
     cp -r * "${PJSIP_TMP_PATH}"
     cd "${PJSIP_TMP_PATH}"
 
-    if [ -d "${BASE_FOLDER}/${LIBYUV_REPO_DIR_NAME}" ]; then
+    if [ -f "${BASE_FOLDER}/${LIBYUV_REPO_DIR_NAME}/libs/${arch}/libyuv.so" ]; then
         #following instructions from here: http://trac.pjsip.org/repos/ticket/1776
         YUV_RELEASE_FOLDER="${BASE_FOLDER}/${LIBYUV_REPO_DIR_NAME}/jni/out/Release"
-        rm -rf "${YUV_RELEASE_FOLDER}"
+        rm -rf "${YUV_RELEASE_FOLDER/*}"
         mkdir -p "${YUV_RELEASE_FOLDER}"
         cp "${BASE_FOLDER}/${LIBYUV_REPO_DIR_NAME}/libs/${arch}/libyuv.so" ${YUV_RELEASE_FOLDER}
     fi
-    if [ -d "${BASE_FOLDER}/${OPUS_DIR_NAME}" ]; then
+    if [ -f "$OPUS_DEV_LIB/lib/$arch/libopus.a" ]; then
         cp $OPUS_DEV_LIB/lib/$arch/libopus.a $OPUS_DEV_LIB/lib/
     fi
 
     CONFIGURE_OPTIONS="--use-ndk-cflags"
-    if [ -d "${BASE_FOLDER}/${OPENSSL_DIR_NAME}" ]; then
+    if [ -d "${OPENSSL_BUILD_OUT_PATH}/libs/${arch}" ]; then
         CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS --with-ssl=${OPENSSL_BUILD_OUT_PATH}/libs/${arch}"
     fi
-    if [ -d "${BASE_FOLDER}/${OPENH264_DIR_NAME}" ]; then
+    if [ -d "${OPENH264_BUILD_OUT_PATH}/libs/${arch}" ]; then
         CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS --with-openh264=${OPENH264_BUILD_OUT_PATH}/libs/${arch}"
     fi
-    if [ -d "${BASE_FOLDER}/${LIBYUV_REPO_DIR_NAME}" ]; then
+    if [ -d "${BASE_FOLDER}/${LIBYUV_REPO_DIR_NAME}/jni" ]; then
         CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS --with-libyuv=${BASE_FOLDER}/${LIBYUV_REPO_DIR_NAME}/jni"
     fi
-    if [ -d "${BASE_FOLDER}/${OPUS_DIR_NAME}" ]; then
+    if [ -d "$OPUS_DEV_LIB" ]; then
         CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS --with-opus=$OPUS_DEV_LIB"
     fi
     APP_PLATFORM=android-${TARGET_ANDROID_API} TARGET_ABI=$arch ./configure-android \
@@ -99,7 +99,7 @@ do
         cp ${OPENH264_BUILD_OUT_PATH}/libs/${arch}/lib/libopenh264.so ${FINAL_BUILD_LIB}/${arch}/
     fi
 
-    if [ -d "${BASE_FOLDER}/${LIBYUV_REPO_DIR_NAME}" ]; then
+    if [ -f "${BASE_FOLDER}/${LIBYUV_REPO_DIR_NAME}/libs/${arch}/libyuv.so" ]; then
         echo "Copying libyuv .so library to final build directory ..."
         cp "${BASE_FOLDER}/${LIBYUV_REPO_DIR_NAME}/libs/${arch}/libyuv.so" ${FINAL_BUILD_LIB}/${arch}/
     fi
