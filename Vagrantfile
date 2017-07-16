@@ -74,6 +74,20 @@ Vagrant.configure(2) do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
+    add-apt-repository -y ppa:webupd8team/java
+    apt-get update
+    apt-get purge -y openjdk*
+    echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+    echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+    apt-get -y install oracle-java8-installer ant
+    DEPS="vim git curl bzip2 gcc g++ binutils make autoconf openssl \
+          libssl-dev ant libopus0 \
+          libpcre3 libpcre3-dev build-essential nasm \
+          libc6:i386 libstdc++6:i386 zlib1g:i386"
+    dpkg --add-architecture i386
+    apt-get update && apt-get -y upgrade && apt-get install -y ${DEPS}
+  SHELL
+  config.vm.provision "shell", inline: <<-SHELL
     cd /pjsip-android-builder
     ./prepare-build-system
   SHELL

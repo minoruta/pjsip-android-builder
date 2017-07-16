@@ -4,23 +4,6 @@
 
 BASEDIR=$(pwd)
 
-if [ "$SETUP_PACKAGES" == "1" ]
-then
-    # Setup Java 8
-    sudo add-apt-repository -y ppa:webupd8team/java
-    sudo apt-get update
-    sudo apt-get purge -y openjdk*
-    echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
-    echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
-    sudo apt-get -y install oracle-java8-installer ant
-
-    DEPS="vim git curl bzip2 gcc g++ binutils make autoconf openssl \
-          libssl-dev ant libopus0 \
-          libpcre3 libpcre3-dev build-essential nasm \
-          libc6:i386 libstdc++6:i386 zlib1g:i386"
-    sudo -- sh -c "dpkg --add-architecture i386; apt-get update && apt-get -y upgrade && apt-get install -y ${DEPS}"
-fi
-
 if [ "$DOWNLOAD_NDK" == "1" ]
 then
     echo "Downloading Android NDK ..."
@@ -86,9 +69,11 @@ then
     fi
 fi
 
-which swig
+set +e
+which swig > /dev/null 2>&1
 if [ $? -ne "0" ] && [ "$DOWNLOAD_SWIG" == "1" ]
 then
+    set -e
     echo "Downloading SWIG ..."
     cd "${BASEDIR}"
     curl -L -# -o swig.tar.gz "$SWIG_DOWNLOAD_URL" 2>&1
@@ -102,6 +87,7 @@ then
     cd ..
     rm -rf "$SWIG_DIR_NAME"
 fi
+set -e
 
 if [ "$DOWNLOAD_OPENSSL" == "1" ]
 then
@@ -120,7 +106,7 @@ if [ "$DOWNLOAD_LIBYUV" == "1" ]
 then
     echo "Downloading libyuv ..."
     cd "${BASEDIR}"
-    rm -rf "${LIBYUV_REPO_DIR_NAME/*}"
+    rm -rf "${LIBYUV_REPO_DIR_NAME}/*"
     git clone "${LIBYUV_REPO_PATH}"
     cd "${LIBYUV_REPO_DIR_NAME}"
     export PATH="${BASEDIR}/${NDK_DIR_NAME}:$PATH"
@@ -144,7 +130,7 @@ then
     echo "Downloading OpenH264 ..."
     cd "${BASEDIR}"
     curl -L -# -o openh264.tar.gz "$OPENH264_DOWNLOAD_URL" 2>&1
-    rm -rf "${OPENH264_DIR_NAME/*}"
+    rm -rf "${OPENH264_DIR_NAME}/*"
     echo "OpenH264 downloaded!"
     echo "Extracting OpenH264 ..."
     tar xzf openh264.tar.gz && rm -rf openh264.tar.gz
@@ -164,7 +150,7 @@ then
     echo "Downloading Opus ..."
     cd "${BASEDIR}"
     curl -L -# -o opus.tar.gz "$OPUS_DOWNLOAD_URL" 2>&1
-    rm -rf "${OPUS_DIR_NAME/*}"
+    rm -rf "${OPUS_DIR_NAME}/*"
     export PATH="${BASEDIR}/${NDK_DIR_NAME}:$PATH"
     echo "Opus downloaded!"
     echo "Extracting Opus ..."

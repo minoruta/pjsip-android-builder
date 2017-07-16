@@ -32,7 +32,7 @@ export ANDROID_NDK_ROOT="${BASE_FOLDER}/${NDK_DIR_NAME}"
 export PATH="$ANDROID_NDK_ROOT:$PATH"
 
 echo "Clear final build folder ..."
-rm -rf "${FINAL_BUILD_DIR/*}"
+rm -rf "${FINAL_BUILD_DIR}/*"
 mkdir -p "${FINAL_BUILD_LIB}"
 mkdir -p "${FINAL_BUILD_LOGS}"
 
@@ -59,7 +59,7 @@ do
     if [ -f "${BASE_FOLDER}/${LIBYUV_REPO_DIR_NAME}/libs/${arch}/libyuv.so" ]; then
         #following instructions from here: http://trac.pjsip.org/repos/ticket/1776
         YUV_RELEASE_FOLDER="${BASE_FOLDER}/${LIBYUV_REPO_DIR_NAME}/jni/out/Release"
-        rm -rf "${YUV_RELEASE_FOLDER/*}"
+        rm -rf "${YUV_RELEASE_FOLDER}/*"
         mkdir -p "${YUV_RELEASE_FOLDER}"
         cp "${BASE_FOLDER}/${LIBYUV_REPO_DIR_NAME}/libs/${arch}/libyuv.so" ${YUV_RELEASE_FOLDER}
     fi
