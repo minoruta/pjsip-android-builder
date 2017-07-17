@@ -80,7 +80,7 @@ Vagrant.configure(2) do |config|
     echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
     echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
     apt-get -y install oracle-java8-installer ant
-    DEPS="vim git curl bzip2 gcc g++ binutils make autoconf openssl \
+    DEPS="vim git curl bzip2 gcc g++ binutils make autoconf openssl wget unzip \
           libssl-dev ant libopus0 \
           libpcre3 libpcre3-dev build-essential nasm \
           libc6:i386 libstdc++6:i386 zlib1g:i386"

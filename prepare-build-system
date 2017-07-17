@@ -8,12 +8,29 @@ if [ "$DOWNLOAD_NDK" == "1" ]
 then
     echo "Downloading Android NDK ..."
     cd "${BASEDIR}"
-    curl -L -# -o ndk.bin "$NDK_DOWNLOAD_URL" 2>&1
     rm -rf "$NDK_DIR_NAME/*"
+    if wget -q --spider http://dl.google.com/android/ndk/android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.tar.bz2 ; then
+        wget -q http://dl.google.com/android/ndk/android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.tar.bz2
+        tar xjf android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.tar.bz2
+        rm android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.tar.bz2
+    elif wget -q --spider http://dl.google.com/android/ndk/android-ndk32-r${ANDROID_NDK_VERSION}-linux-x86_64.tar.bz2 ; then
+        wget -q http://dl.google.com/android/ndk/android-ndk32-r${ANDROID_NDK_VERSION}-linux-x86_64.tar.bz2
+        tar xjf android-ndk32-r${ANDROID_NDK_VERSION}-linux-x86_64.tar.bz2
+        rm android-ndk32-r${ANDROID_NDK_VERSION}-linux-x86_64.tar.bz2
+    elif wget -q --spider http://dl.google.com/android/repository/android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.zip ; then
+        wget -q http://dl.google.com/android/repository/android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.zip
+        unzip -qo android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.zip
+        rm android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.zip
+    elif wget -q --spider http://dl.google.com/android/ndk/android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.bin ; then
+        wget -q http://dl.google.com/android/ndk/android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.bin
+        chmod +x android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.bin
+        ./android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.bin
+        rm android-ndk-r${ANDROID_NDK_VERSION}-linux-x86_64.bin
+    else
+        echo "No NDK r${ANDROID_NDK_VERSION} found!"
+        exit 1
+    fi
     echo "Android NDK downloaded!"
-    echo "Extracting Android NDK ..."
-    chmod +x ndk.bin && ./ndk.bin 2>&1 > /dev/null || true
-    rm -rf ndk.bin
 fi
 
 if [ "$DOWNLOAD_SDK" == "1" ]

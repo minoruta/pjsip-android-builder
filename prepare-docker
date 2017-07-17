@@ -1,14 +1,22 @@
 #!/bin/bash -e
 
+. config.conf
+
 set +e
 docker inspect pjsip-prepare > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     docker build \
         -f Docker/Dockerfile.prepare \
+        --build-arg ANDROID_NDK_VERSION=$ANDROID_NDK_VERSION \
+        --build-arg PJSIP_VERSION=$PJSIP_VERSION \
         -t pjsip-prepare \
         .
 fi
 
+docker container inspect pjsip-prepare > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    docker container rm pjsip-prepare
+fi
 docker run -t \
     --name pjsip-prepare \
     pjsip-prepare
